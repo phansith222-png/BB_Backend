@@ -20,18 +20,27 @@ export const registerSchema = z.object({
     lastName: z.string().optional(),
     zodiac: z.string().optional(),
     dateOfBirth: z.string().optional()
-}).refine(input => input.password === input.confirmPassword,{
+}).refine(input => input.password === input.confirmPassword, {
     message: "password must match with confirm password",
     path: ['confirmpassword']
 })
-.transform(async data => ({
-    [identityKey(data.identity)]: data.identity,
+    .transform(async data => ({
+        [identityKey(data.identity)]: data.identity,
+        username: data.username,
+        password: await bcrypt.hash(data.password, 8),
+        firstName: data.firstName,
+        lastName: data.lastName,
+        profileImage: data.profileImage,
+        zodiac: data.zodiac,
+        dateOfBirth: data.dateOfBirth,
+        role: data.role
+    }))
+
+
+export const loginSchema = z.object({
+    username: z.string().min(8, "At least 8 characters"),
+    password: z.string().min(6, "password at least 6 characters")
+}).transform(data => ({
     username: data.username,
-    password: await bcrypt.hash(data.password, 8),
-    firstName:data.firstName,
-    lastName:data.lastName,
-    profileImage:data.profileImage,
-    zodiac: data.zodiac,
-    dateOfBirth: data.dateOfBirth,
-    role: data.role
+    password: data.password
 }))

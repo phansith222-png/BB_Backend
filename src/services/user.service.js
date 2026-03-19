@@ -2,7 +2,10 @@ import { prisma } from "../lib/prisma.js"
 
 export async function getUserBy(field, value) {
     return await prisma.user.findFirst({
-        where: { [field]: value }
+        where: { [field]: value },
+        include:{
+            userInfo:true
+        }
     })
 }
 
