@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum RoleType {
+  ADMIN
+  USER
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  username  String     @unique
+  password  String
+  email     String?    @unique
+  mobile    String?    @unique
+  role      RoleType   @default(USER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  userInfo  UserInfo[]
+}
+
+model UserInfo {
+  id            Int            @id @default(autoincrement())
+  firstName     String?
+  lastName      String?
+  profileImage  String?
+  zodiac        String?
+  dateOfBirth   String?
+  readings      Reading[]
+  spreads       Spread[]
+  savedReadings SavedReading[]
+  user          User?          @relation(fields: [userId], references: [id])
+  userId        Int?
+}
+
+model SpreadType {
+  id          Int      @id @default(autoincrement())
+  typeName    String   @unique
+  description String?
+  spreads     Spread[]
+}
+
+model Spread {
+  id           Int        @id @default(autoincrement())
+  name         String
+  cardCount    Int
+  isCustom     Boolean    @default(false)
+  spreadType   SpreadType @relation(fields: [spreadTypeId], references: [id])
+  spreadTypeId Int
+  userInfo     UserInfo   @relation(fields: [userInfoId], references: [id])
+  userInfoId   Int
+  readings     Reading[]
+}
+
+enum CardType {
+  MAJOR
+  MINOR
+}
+
+model Card {
+  id           Int        @id @default(autoincrement())
+  name         String
+  upright_Mean String     @db.Text
+  reverse_Mean String     @db.Text
+  img_url      String
+  cardNumber   Int        @unique
+  type         CardType
+  readCards    ReadCard[]
+}
+
+enum ReadingStatus {
+  PENDING
+  SHUFFLED
+  COMPLETED
+}
+
+model Reading {
+  id               Int               @id @default(autoincrement())
+  question         String?
+  isDaily          Boolean           @default(false)
+  status           ReadingStatus     @default(PENDING)
+  createdAt        DateTime          @default(now())
+  userInfo         UserInfo          @relation(fields: [userInfoId], references: [id])
+  userInfoId       Int
+  spreadId         Int?
+  spread           Spread?           @relation(fields: [spreadId], references: [id])
+  readCards        ReadCard[]
+  aiInterpretation AiInterpretation?
+  savedReading     SavedReading?
+}
+
+model ReadCard {
+  id         Int      @id @default(autoincrement())
+  isReversed Boolean  @default(false)
+  position   Int
+  card       Card?    @relation(fields: [cardId], references: [id])
+  cardId     Int?
+  reading    Reading? @relation(fields: [readingId], references: [id])
+  readingId  Int?
+}
+
+model AiInterpretation {
+  id        Int      @id @default(autoincrement())
+  prompt    String   @db.Text
+  response  String   @db.Text
+  tokenUsed Int?
+  createdAt DateTime @default(now())
+  readingId Int      @unique
+  reading   Reading  @relation(fields: [readingId], references: [id], onDelete: Cascade)
+}
+
+model SavedReading {
+  id         Int       @id @default(autoincrement())
+  note       String?   @db.Text
+  createdAt  DateTime  @default(now())
+  reading    Reading   @relation(fields: [readingId], references: [id], onDelete: Cascade)
+  readingId  Int       @unique
+  userInfo   UserInfo? @relation(fields: [userInfoId], references: [id])
+  userInfoId Int?
+}

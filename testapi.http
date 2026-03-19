@@ -1,0 +1,24 @@
+@base_url = http://localhost:3000
+
+### POST Register  ลงทะเบียนผู้ใช้
+POST {{base_url}}/api/auth/register
+Content-Type: application/json
+
+{
+    "identity":"bentest123@gmail.com",
+    "username":"Kodlnwxd444",
+    "password":"testpass1234",
+    "confirmPassword":"testpass1234",
+    "firstName":"nasdasd",
+    "lastName":"asdasdasd",
+    "dateOfBirth":"23/01/2545"
+}
+
+### POST Login  เข้าใช้งาน Website
+POST {{base_url}}/api/auth/login
+Content-Type: application/json
+
+{
+    "username":"Kodlnwxd444",
+    "password":"testpass1234"
+}
