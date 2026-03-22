@@ -38,8 +38,8 @@ export const registerSchema = z.object({
 
 
 export const loginSchema = z.object({
-    username: z.string().min(8, "At least 8 characters"),
-    password: z.string().min(6, "password at least 6 characters")
+    username: z.string().min(8, "Username must be at least 8 characters long"),
+    password: z.string().min(6, "Password must be at least 6 characters long")
 }).transform(data => ({
     username: data.username,
     password: data.password

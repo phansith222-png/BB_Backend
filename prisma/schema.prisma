@@ -39,7 +39,7 @@ model UserInfo {
   readings      Reading[]
   spreads       Spread[]
   savedReadings SavedReading[]
-  user          User?          @relation(fields: [userId], references: [id])
+  user          User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int?
 }
 
@@ -55,10 +55,10 @@ model Spread {
   name         String
   cardCount    Int
   isCustom     Boolean    @default(false)
-  spreadType   SpreadType @relation(fields: [spreadTypeId], references: [id])
+  spreadType   SpreadType @relation(fields: [spreadTypeId], references: [id], onDelete: Cascade)
   spreadTypeId Int
-  userInfo     UserInfo   @relation(fields: [userInfoId], references: [id])
-  userInfoId   Int
+  userInfo     UserInfo?  @relation(fields: [userInfoId], references: [id], onDelete: Cascade)
+  userInfoId   Int?
   readings     Reading[]
 }
 
@@ -90,10 +90,10 @@ model Reading {
   isDaily          Boolean           @default(false)
   status           ReadingStatus     @default(PENDING)
   createdAt        DateTime          @default(now())
-  userInfo         UserInfo          @relation(fields: [userInfoId], references: [id])
+  userInfo         UserInfo          @relation(fields: [userInfoId], references: [id], onDelete: Cascade)
   userInfoId       Int
   spreadId         Int?
-  spread           Spread?           @relation(fields: [spreadId], references: [id])
+  spread           Spread?           @relation(fields: [spreadId], references: [id], onDelete: Cascade)
   readCards        ReadCard[]
   aiInterpretation AiInterpretation?
   savedReading     SavedReading?
@@ -103,9 +103,9 @@ model ReadCard {
   id         Int      @id @default(autoincrement())
   isReversed Boolean  @default(false)
   position   Int
-  card       Card?    @relation(fields: [cardId], references: [id])
+  card       Card?    @relation(fields: [cardId], references: [id], onDelete: Cascade)
   cardId     Int?
-  reading    Reading? @relation(fields: [readingId], references: [id])
+  reading    Reading? @relation(fields: [readingId], references: [id], onDelete: Cascade)
   readingId  Int?
 }
 
@@ -125,6 +125,6 @@ model SavedReading {
   createdAt  DateTime  @default(now())
   reading    Reading   @relation(fields: [readingId], references: [id], onDelete: Cascade)
   readingId  Int       @unique
-  userInfo   UserInfo? @relation(fields: [userInfoId], references: [id])
+  userInfo   UserInfo? @relation(fields: [userInfoId], references: [id], onDelete: Cascade)
   userInfoId Int?
 }

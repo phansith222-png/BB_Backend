@@ -7,3 +7,9 @@ export function createToken (payload) {
     })
     return token
 }
+
+export function verifyToken (token) {
+    const payload = jwt.verify(token,process.env.JWT_SECRET)
+    // console.log(payload)
+    return payload
+}

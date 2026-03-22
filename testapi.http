@@ -5,8 +5,8 @@ POST {{base_url}}/api/auth/register
 Content-Type: application/json
 
 {
-    "identity":"bentest123@gmail.com",
-    "username":"Kodlnwxd444",
+    "identity":"bentessadt123@gmail.com",
+    "username":"Kodlnwxsasadd444",
     "password":"testpass1234",
     "confirmPassword":"testpass1234",
     "firstName":"nasdasd",
@@ -19,6 +19,19 @@ POST {{base_url}}/api/auth/login
 Content-Type: application/json
 
 {
-    "username":"Kodlnwxd444",
+    "username":"Kodlnwxsasadd444",
     "password":"testpass1234"
 }
+
+### POST Initial Reading เริ่ม Session
+POST {{base_url}}/api/readings/init
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzc0MTczNzY3LCJleHAiOjE3NzQyNjAxNjd9.AzlShAclAus9QWuQq2yThphXTuq8ryYWoFnAlTMSOHY
+Content-Type: application/json
+
+{
+    "spreadId":1,
+    "isDaily":false,
+    "question":"Tarot of the day"
+}
+
+### POST Shuffle Card 

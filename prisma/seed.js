@@ -49,16 +49,38 @@ const userData = [
 
 const standardSpreadType = [
     {
-        typeName: "SINGLE_CARD",
-        description: "การเปิดไพ่ใบเดียวเพื่อดูแนวโน้มรายวัน หรือคำตอบที่ชัดเจนเพียงข้อเดียว"
+        name: "TarotOfTheDay",
+        cardCount: 1,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "SINGLE_CARD",
+                description: "การเปิดไพ่ใบเดียวเพื่อดูแนวโน้มรายวัน หรือคำตอบที่ชัดเจนเพียงข้อเดียว"
+            }
+        }
     },
     {
-        typeName: "PAST_PRESENT_FUTURE",
-        description: "การวางไพ่ 3 ใบ เพื่อดูที่มาของปัญหา สถานการณ์ปัจจุบัน และแนวโน้มที่จะเกิดขึ้นในอนาคต"
+        name: "PAST_PRESENT_FUTURE",
+        cardCount: 3,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "PAST_PRESENT_FUTURE",
+                description: "การวางไพ่ 3 ใบ เพื่อดูที่มาของปัญหา สถานการณ์ปัจจุบัน และแนวโน้มที่จะเกิดขึ้นในอนาคต"
+            }
+        }
+
     },
     {
-        typeName: "CELTIC_CROSS",
-        description: "การวางไพ่ 10 ใบ มาตรฐานสากลเพื่อวิเคราะห์สถานการณ์อย่างละเอียดในทุกมิติ"
+        name: "CELTIC_CROSS",
+        cardCount: 10,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "CELTIC_CROSS",
+                description: "การวางไพ่ 10 ใบ มาตรฐานสากลเพื่อวิเคราะห์สถานการณ์อย่างละเอียดในทุกมิติ"
+            }
+        }
     }
 ]
 
@@ -67,6 +89,7 @@ async function main() {
     await prisma.$transaction([
         prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 0;'),
         prisma.$executeRawUnsafe('TRUNCATE TABLE `User` ;'),
+        prisma.$executeRawUnsafe('TRUNCATE TABLE `UserInfo` ;'),
         prisma.$executeRawUnsafe('TRUNCATE TABLE `Spread` ;'),
         prisma.$executeRawUnsafe('TRUNCATE TABLE `Card` ;'),
         prisma.$executeRawUnsafe('TRUNCATE TABLE `Reading` ;'),
@@ -77,7 +100,7 @@ async function main() {
         prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 1;'),
     ])
     console.log('Start seeding process ...')
-    for(const user of userData) {
+    for (const user of userData) {
         await prisma.user.create({
             data: user
         })
@@ -86,15 +109,16 @@ async function main() {
         data: cardData,
         skipDuplicates: true
     })
-    const createSpreadTypes = await prisma.spreadType.createMany({
-        data: standardSpreadType,
-        skipDuplicates: true
-    })
+    for (const spread of standardSpreadType) {
+        await prisma.spread.create({
+            data:spread
+        })
+    }
     console.log('-----------------------------------');
     console.log('📊 Database Seeding Completed:');
     console.log(`   - Users        : ${userData.length}`);
     console.log(`   - Tarot Cards  : ${createTarotCards.count}`);
-    console.log(`   - Spread Types : ${createSpreadTypes.count}`);
+    console.log(`   - Spread Types : ${standardSpreadType.length}`);
     console.log('-----------------------------------');
 }
 

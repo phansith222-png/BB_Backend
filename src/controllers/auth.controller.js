@@ -33,24 +33,29 @@ export async function register (req,res,next) {
     })
 }
 export async function login (req,res,next) {
-    const data = loginSchema.parse(req.body)
-    const foundUser = await getUserBy("username",data.username)
-    if(!foundUser){
-        return next(createHttpError[401]("Invalid Login 1 "))
+    try {
+        const data = loginSchema.parse(req.body)
+        const foundUser = await getUserBy("username",data.username)
+        if(!foundUser){
+            return next(createHttpError[401]("Invalid Username or Password 1 "))
+        }
+        const pwok = await bcrypt.compare(data.password,foundUser.password)
+        if(!pwok){
+            return next(createHttpError[401]("Invalid Username or Password 2 "))
+        }
+        const payload = {id: foundUser.id}
+        console.log(payload)
+        const accesstoken = createToken(payload)
+        const {password,createdAt,updatedAt,userInfo,...user}= foundUser
+        res.status(200).json({
+            message: "Login Success",
+            token:accesstoken,
+            user:user,
+            profile:userInfo[0]||null
+        })
+    } catch (error) {
+        next(error)
     }
-    const pwok = await bcrypt.compare(data.password,foundUser.password)
-    if(!pwok){
-        return next(createHttpError[401]("Invalid Login 2 "))
-    }
-    const payload = {id: data.id}
-    const accesstoken = createToken(payload)
-    const {password,createdAt,updatedAt,userInfo,...user}= foundUser
-    res.status(200).json({
-        message: "Login Success",
-        token:accesstoken,
-        user:user,
-        userInfo:userInfo[0]
-    })
 }
 export async function getMe (req,res,next) {
     res.send("Get me Controller")
