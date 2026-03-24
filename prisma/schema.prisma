@@ -81,6 +81,7 @@ model Card {
 enum ReadingStatus {
   PENDING
   SHUFFLED
+  CUT
   COMPLETED
 }
 
@@ -90,8 +91,9 @@ model Reading {
   isDaily          Boolean           @default(false)
   status           ReadingStatus     @default(PENDING)
   createdAt        DateTime          @default(now())
-  userInfo         UserInfo          @relation(fields: [userInfoId], references: [id], onDelete: Cascade)
-  userInfoId       Int
+  deckOrder        Json?
+  userInfo         UserInfo?          @relation(fields: [userInfoId], references: [id], onDelete: Cascade)
+  userInfoId       Int?
   spreadId         Int?
   spread           Spread?           @relation(fields: [spreadId], references: [id], onDelete: Cascade)
   readCards        ReadCard[]

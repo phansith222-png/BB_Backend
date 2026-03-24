@@ -1,6 +1,5 @@
 @base_url = http://localhost:3000
-
-### POST Register  ลงทะเบียนผู้ใช้
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzc0MzM0MDg5LCJleHAiOjE3NzQ0MjA0ODl9.fpAibZX_4Vyo6YWA8BPyVWMGT_n4XNgRMSRvTQtMnfk
 POST {{base_url}}/api/auth/register
 Content-Type: application/json
 
@@ -23,15 +22,91 @@ Content-Type: application/json
     "password":"testpass1234"
 }
 
+
 ### POST Initial Reading เริ่ม Session
 POST {{base_url}}/api/readings/init
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzc0MTczNzY3LCJleHAiOjE3NzQyNjAxNjd9.AzlShAclAus9QWuQq2yThphXTuq8ryYWoFnAlTMSOHY
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
     "spreadId":1,
     "isDaily":false,
-    "question":"Tarot of the day"
+    "question":"ไดรฟ์จะทำงานเสร็จ",
+    "allowReversed":true
 }
 
 ### POST Shuffle Card 
+POST {{base_url}}/api/readings/shuffle
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "readingId":47,
+    "times":23,
+    "allowReversed":true
+}
+
+### POST Cut Card
+POST {{base_url}}/api/readings/cut
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "readingId":47,
+    "position":7
+}
+
+
+### POST Pick Card
+POST {{base_url}}/api/readings/pick
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "readingId":47,
+    "selectId":[
+         {"id":1,"isReversed": false},
+         {"id":3,"isReversed": true},
+         {"id":5,"isReversed": true}
+        ]
+}
+
+### POST AI Interpret
+POST {{base_url}}/api/readings/1/ai-interpret
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "readingId":47,
+    "spreadType": "TarotOfTheDay",
+  "question": "ไดรฟ์จะทำงานเสร็จ",
+  "card": [
+    {
+      "id": 1,
+      "name": "The Fool",
+      "upright_Mean": "การเริ่มต้นใหม่, อิสระ, ความไร้เดียงสา",
+      "reverse_Mean": "ความประมาท, การตัดสินใจผิดพลาด",
+      "img_url": "https://upload.wikimedia.org/wikipedia/en/9/90/RWS_Tarot_00_Fool.jpg",
+      "cardNumber": 0,
+      "type": "MAJOR"
+    },
+    {
+      "id": 3,
+      "name": "The High Priestess",
+      "upright_Mean": "สัญชาตญาณ, ความลึกลับ, ความรู้ภายใน",
+      "reverse_Mean": "ความสับสน, การมองข้ามสัญชาตญาณ",
+      "img_url": "https://upload.wikimedia.org/wikipedia/en/8/88/RWS_Tarot_02_High_Priestess.jpg",
+      "cardNumber": 2,
+      "type": "MAJOR"
+    },
+    {
+      "id": 5,
+      "name": "The Emperor",
+      "upright_Mean": "อำนาจ, โครงสร้าง, การปกป้อง",
+      "reverse_Mean": "การเผด็จการ, ความเข้มงวดเกินไป",
+      "img_url": "https://upload.wikimedia.org/wikipedia/en/c/c3/RWS_Tarot_04_Emperor.jpg",
+      "cardNumber": 4,
+      "type": "MAJOR"
+    }
+  ]
+}

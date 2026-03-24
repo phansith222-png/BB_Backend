@@ -5,3 +5,9 @@ export async function findSpread(spreadId) {
         where:{id:Number(spreadId)}
     })
 }
+
+export async function findReading(readingId) {
+    return await prisma.reading.findFirst({
+        where:{id:Number(readingId)}
+    })
+}

@@ -4,24 +4,25 @@ import dayjs from 'dayjs'
 export async function dailyCheck(req, res, next) {
     try {
         const { isDaily } = req.body
-        const { userInfo } = req.user
-        // console.log(userInfo)
+        const { user, userInfo } = req.user || {}
         if (isDaily === true) {
-            const alreadyRead = await prisma.reading.findFirst({
-                where: {
-                    userInfoId: userInfo.id,
-                    isDaily: true,
-                    spreadType:1,
-                    createdAt: { gte: dayjs().startOf('date').toDate() }
-                }
-            })
-            if (alreadyRead) {
-                return next(createHttpErrors[400]("Already picked"))
+            if (user && userInfo) {
+                const alreadyRead = await prisma.reading.findFirst({
+                    where: {
+                        userInfoId: userInfo.id,
+                        isDaily: true,
+                        // spreadId: 1,
+                        createdAt: { gte: dayjs().startOf('day').toDate() }
+                    }
+                })
+                if (alreadyRead)
+                    return next(createHttpErrors[400]("You have already picked today"))
+            } else {
             }
         }
-        next()
+        return next()
 
     } catch (error) {
-        next(error)
+        return next(error)
     }
 }
