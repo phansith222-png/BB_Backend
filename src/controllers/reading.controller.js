@@ -135,14 +135,32 @@ export async function pick(req, res, next) {
 
 export async function aiInterpret(req, res, next) {
     try {
+        console.log(req.body)
         const {readingId,spreadType,question,card} = req.body
         const reading = await findReading(readingId)
         if (!reading) {
             return next(createHttpErrors[400]("Invalid AI interpret session"))
         }
-        const targetCard = card[0]
+        const cardIds = card.map(c => c.id)
+        const cardDetails = await prisma.card.findMany({
+            where:{
+                id:{
+                    in:cardIds
+                }
+            }
+        })
+        const targetCard = cardIds.map((id) => {
+            const detail = cardDetails.find(c => c.id === id);
+            const shuffleInfo = reading.deckOrder?.find(s => s.id === id);
+            const isReversed = shuffleInfo?.isReversed || false;
+            return {
+                name: detail?.name,
+                isReversed: isReversed,
+                meaning: isReversed ? detail?.reverse_Mean : detail?.upright_Mean
+            };
+        });
         const responseAI = await askGemini(spreadType,question,targetCard)
-        // console.log(responseAI)
+        console.log(responseAI)
         // await prisma.reading.update({
         //     where:{id:readingId},
         //     data:{

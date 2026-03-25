@@ -7,9 +7,9 @@ import { dailyCheck } from '../middlewares/dailyCheck.middlewares.js';
 const readingRoutes = express.Router()
 
 readingRoutes.post('/init',optionalAuth,dailyCheck,initial)
-readingRoutes.post('/shuffle',authenticate,shuffle)
-readingRoutes.post('/cut',authenticate,cut)
-readingRoutes.post('/pick',authenticate,pick)
-readingRoutes.post('/:id/ai-interpret',authenticate,aiInterpret)
+readingRoutes.post('/shuffle',optionalAuth,shuffle)
+readingRoutes.post('/cut',optionalAuth,cut)
+readingRoutes.post('/pick',optionalAuth,pick)
+readingRoutes.post('/ai-interpret',authenticate,aiInterpret)
 
 export default readingRoutes

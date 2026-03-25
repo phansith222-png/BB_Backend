@@ -1,5 +1,5 @@
 @base_url = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzc0MzM0MDg5LCJleHAiOjE3NzQ0MjA0ODl9.fpAibZX_4Vyo6YWA8BPyVWMGT_n4XNgRMSRvTQtMnfk
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzc0MzQzMTYwLCJleHAiOjE3NzQ0Mjk1NjB9.2eT4qCbT4Yien4moKzy6xfOg2WI1Ukzm3mfFvUxOfHM
 POST {{base_url}}/api/auth/register
 Content-Type: application/json
 
@@ -30,7 +30,7 @@ Content-Type: application/json
 
 {
     "spreadId":1,
-    "isDaily":false,
+    "isDaily":true,
     "question":"ไดรฟ์จะทำงานเสร็จ",
     "allowReversed":true
 }
@@ -41,7 +41,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "readingId":47,
+    "readingId":1,
     "times":23,
     "allowReversed":true
 }
@@ -52,7 +52,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "readingId":47,
+    "readingId":1,
     "position":7
 }
 
@@ -63,7 +63,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "readingId":47,
+    "readingId":1,
     "selectId":[
          {"id":1,"isReversed": false},
          {"id":3,"isReversed": true},
@@ -72,12 +72,12 @@ Content-Type: application/json
 }
 
 ### POST AI Interpret
-POST {{base_url}}/api/readings/1/ai-interpret
+POST {{base_url}}/api/readings/ai-interpret
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "readingId":47,
+    "readingId":1,
     "spreadType": "TarotOfTheDay",
   "question": "ไดรฟ์จะทำงานเสร็จ",
   "card": [
