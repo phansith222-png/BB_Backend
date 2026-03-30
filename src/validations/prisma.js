@@ -44,3 +44,27 @@ export const loginSchema = z.object({
     username: data.username,
     password: data.password
 }))
+
+export const updateMeSchema = z.object({
+    identity: z.string().optional().or(z.literal('')),
+    username: z.string().min(8, ("Username must be at least 8 characters long")).optional(),
+    firstName: z.string().optional().or(z.literal('')),
+    lastName: z.string().optional().or(z.literal('')),
+    zodiac: z.string().optional().or(z.literal('')),
+    dateOfBirth: z.string().optional().or(z.literal('')),
+    profileImage: z.string().optional().or(z.literal('')),
+}).transform((data) => {
+    const transform = {
+        username: data.username,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        profileImage: data.profileImage,
+        zodiac: data.zodiac,
+        dateOfBirth: data.dateOfBirth,
+    }
+    if(data.identity){
+        const key = identityKey(data.identity);
+        transform[key]= data.identity
+    }
+    return transform
+})

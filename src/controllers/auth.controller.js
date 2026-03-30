@@ -57,9 +57,3 @@ export async function login (req,res,next) {
         next(error)
     }
 }
-export async function getMe (req,res,next) {
-    res.send("Get me Controller")
-}
-export async function updateMe (req,res,next) {
-    res.send("Update me Controller")
-}

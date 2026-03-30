@@ -68,14 +68,17 @@ enum CardType {
 }
 
 model Card {
-  id           Int        @id @default(autoincrement())
-  name         String
-  upright_Mean String     @db.Text
-  reverse_Mean String     @db.Text
-  img_url      String
-  cardNumber   Int        @unique
-  type         CardType
-  readCards    ReadCard[]
+  id               Int        @id @default(autoincrement())
+  name             String
+  upright_Mean     String     @db.Text
+  reverse_Mean     String     @db.Text
+  img_url          String
+  description      String     @db.Text
+  detailed_meaning String     @db.Text
+  cardNumber       Int        @unique
+  suit             String?
+  type             CardType
+  readCards        ReadCard[]
 }
 
 enum ReadingStatus {
@@ -92,7 +95,7 @@ model Reading {
   status           ReadingStatus     @default(PENDING)
   createdAt        DateTime          @default(now())
   deckOrder        Json?
-  userInfo         UserInfo?          @relation(fields: [userInfoId], references: [id], onDelete: Cascade)
+  userInfo         UserInfo?         @relation(fields: [userInfoId], references: [id], onDelete: Cascade)
   userInfoId       Int?
   spreadId         Int?
   spread           Spread?           @relation(fields: [spreadId], references: [id], onDelete: Cascade)
@@ -112,13 +115,13 @@ model ReadCard {
 }
 
 model AiInterpretation {
-  id        Int      @id @default(autoincrement())
-  prompt    String   @db.Text
-  response  String   @db.Text
-  tokenUsed Int?
-  createdAt DateTime @default(now())
-  readingId Int      @unique
-  reading   Reading  @relation(fields: [readingId], references: [id], onDelete: Cascade)
+  id         Int      @id @default(autoincrement())
+  summary    String   @db.Text
+  detail     String   @db.Text
+  mood_score Float
+  createdAt  DateTime @default(now())
+  readingId  Int      @unique
+  reading    Reading  @relation(fields: [readingId], references: [id], onDelete: Cascade)
 }
 
 model SavedReading {

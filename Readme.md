@@ -23,8 +23,10 @@ JWT_SECRET=
 |:-- |:--|:--|:--|:--|:--|
 |/api/users/me|GET|-|-|-|-
 |/api/users/me|PATCH|-|-|-|(firstName,lastName,date_of_birth)
-|/api/saved-readings|POST|-|-|-|-
-|/api/saved-readings/:id|DELETE|-|-|-|-
+|/api/users/history |GET|-|-|-|-
+|/api/users/saved-readings|POST|-|-|-|-
+|/api/users/saved-readings|GET|-|-|-|-
+|/api/users/saved-readings/:id|DELETE|-|-|-|-
 
 ---
 
@@ -36,7 +38,7 @@ JWT_SECRET=
 |/api/readings/cut |POST|-|-|-|(readingId,position)
 |/api/readings/pick |POST|-|-|-|(readingId,SelectId)
 |/api/readings/:id/ai-interpret |POST|-|-|-|-
-|/api/readings/history |POST|-|-|-|-
+|/api/readings/spread/:id |GET|-|-|-|-
 
 ---
 

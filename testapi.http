@@ -1,11 +1,11 @@
 @base_url = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiaWF0IjoxNzc0MzQzMTYwLCJleHAiOjE3NzQ0Mjk1NjB9.2eT4qCbT4Yien4moKzy6xfOg2WI1Ukzm3mfFvUxOfHM
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzc0Njk1OTcwLCJleHAiOjE3NzQ3ODIzNzB9.55sfPgO_DNswmRq2Zzyxp40asWd2DbEbiNh-AE-sdyY
 POST {{base_url}}/api/auth/register
 Content-Type: application/json
 
 {
-    "identity":"bentessadt123@gmail.com",
-    "username":"Kodlnwxsasadd444",
+    "identity":"bentesssssadt123@gmail.com",
+    "username":"Kodlsdxsasadd444",
     "password":"testpass1234",
     "confirmPassword":"testpass1234",
     "firstName":"nasdasd",
@@ -18,8 +18,22 @@ POST {{base_url}}/api/auth/login
 Content-Type: application/json
 
 {
-    "username":"Kodlnwxsasadd444",
+    "username":"Kodlsdxsasadd444",
     "password":"testpass1234"
+}
+
+### GET me ดูข้อมูลของ User
+GET {{base_url}}/api/users/me
+Authorization: Bearer {{token}}
+
+
+### PATCH me อัพเดทข้อมูล User
+PATCH {{base_url}}/api/users/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "identity":"0123sasda"
 }
 
 
@@ -30,8 +44,8 @@ Content-Type: application/json
 
 {
     "spreadId":1,
-    "isDaily":true,
-    "question":"ไดรฟ์จะทำงานเสร็จ",
+    "isDaily":false,
+    "question":"ไดรnaฟ์จะทำงานเสร็จ",
     "allowReversed":true
 }
 
@@ -41,7 +55,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "readingId":1,
+    "readingId":28,
     "times":23,
     "allowReversed":true
 }
@@ -52,7 +66,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "readingId":1,
+    "readingId":28,
     "position":7
 }
 
@@ -63,7 +77,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "readingId":1,
+    "readingId":28,
     "selectId":[
          {"id":1,"isReversed": false},
          {"id":3,"isReversed": true},
@@ -77,7 +91,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "readingId":1,
+    "readingId":28,
     "spreadType": "TarotOfTheDay",
   "question": "ไดรฟ์จะทำงานเสร็จ",
   "card": [
@@ -110,3 +124,48 @@ Content-Type: application/json
     }
   ]
 }
+
+### GET Spread ทั้งหมด
+GET {{base_url}}/api/readings/spread
+Authorization: Bearer {{token}}
+
+
+### GET Spread ที่ต้องการ
+GET {{base_url}}/api/readings/spread/1
+Authorization: Bearer {{token}}
+
+
+
+### GET ประวัติการดูดวง
+GET {{base_url}}/api/users/history
+Authorization: Bearer {{token}}
+
+
+### POST บันทึกประวัติดูดวง
+POST {{base_url}}/api/users/saved-readings
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "readingId":4,
+  "note":"today is so bad"
+}
+
+### GET ดึงประวัติการบันทึกดูดวง
+GET {{base_url}}/api/users/saved-readings
+Authorization: Bearer {{token}}
+
+### DELETE ยกเลิกบันทึกประวัติดูดวง
+DELETE {{base_url}}/api/users/saved-readings/1
+Authorization: Bearer {{token}}
+
+
+
+
+### GET ดูข้อมูลการ์ดทั้งหมดที่อยู่ในระบบ
+GET {{base_url}}/api/cards
+Authorization: Bearer {{token}}
+
+### GET ดูข้อมูลการ์ดแต่ละใบ
+GET {{base_url}}/api/cards/1
+Authorization: Bearer {{token}}

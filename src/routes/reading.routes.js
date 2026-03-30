@@ -1,6 +1,6 @@
 import express from 'express';
-import { aiInterpret, cut, initial, pick, shuffle } from '../controllers/reading.controller.js';
-import { authenticate, optionalAuth } from '../middlewares/auth.middlewares.js';
+import { aiInterpret, cut, getSpread, getSpreadId, initial, pick, shuffle } from '../controllers/reading.controller.js';
+import { optionalAuth } from '../middlewares/auth.middlewares.js';
 import { dailyCheck } from '../middlewares/dailyCheck.middlewares.js';
 
 
@@ -10,6 +10,8 @@ readingRoutes.post('/init',optionalAuth,dailyCheck,initial)
 readingRoutes.post('/shuffle',optionalAuth,shuffle)
 readingRoutes.post('/cut',optionalAuth,cut)
 readingRoutes.post('/pick',optionalAuth,pick)
-readingRoutes.post('/ai-interpret',authenticate,aiInterpret)
+readingRoutes.get('/spread',optionalAuth,getSpread)
+readingRoutes.get('/spread/:id',optionalAuth,getSpreadId)
+readingRoutes.post('/ai-interpret',optionalAuth,aiInterpret)
 
 export default readingRoutes

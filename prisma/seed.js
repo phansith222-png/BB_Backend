@@ -49,36 +49,90 @@ const userData = [
 
 const standardSpreadType = [
     {
-        name: "TarotOfTheDay",
+        name: "Daily Insight (ไพ่ประจำวัน)",
         cardCount: 1,
         isCustom: false,
         spreadType: {
             create: {
                 typeName: "SINGLE_CARD",
-                description: "การเปิดไพ่ใบเดียวเพื่อดูแนวโน้มรายวัน หรือคำตอบที่ชัดเจนเพียงข้อเดียว"
+                description: "การเปิดไพ่ใบเดียวเพื่อตรวจเช็กพลังงาน แนวโน้มประจำวัน หรือรับข้อความแนะนำสั้นๆ จากจักรวาลที่ตรงไปตรงมาที่สุด"
             }
         }
     },
     {
-        name: "PAST_PRESENT_FUTURE",
+        name: "The Thread of Time (อดีต, ปัจจุบัน, อนาคต)",
         cardCount: 3,
         isCustom: false,
         spreadType: {
             create: {
                 typeName: "PAST_PRESENT_FUTURE",
-                description: "การวางไพ่ 3 ใบ เพื่อดูที่มาของปัญหา สถานการณ์ปัจจุบัน และแนวโน้มที่จะเกิดขึ้นในอนาคต"
+                description: "วิเคราะห์เส้นเวลาของชีวิต เชื่อมโยงรากฐานจากอดีต เข้าใจสถานการณ์ที่กำลังเผชิญ และเตรียมรับมือกับแนวโน้มที่จะเกิดขึ้นในอนาคต"
             }
         }
-
     },
     {
-        name: "CELTIC_CROSS",
+        name: "Action & Outcome (ปัญหา, ทางออก, บทสรุป)",
+        cardCount: 3,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "SITUATION_ACTION_OUTCOME",
+                description: "เจาะลึกปัญหาเฉพาะหน้า ช่วยวิเคราะห์สถานการณ์ เสนอแนะวิธีรับมือ (Action) และคาดการณ์ผลลัพธ์ (Outcome) เพื่อประกอบการตัดสินใจ"
+            }
+        }
+    },
+    {
+        name: "Mind, Body, Spirit (เช็กสมดุลกายใจ)",
+        cardCount: 3,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "MIND_BODY_SPIRIT",
+                description: "การอ่านไพ่เพื่อการเยียวยาตนเอง (Self-Healing) ตรวจสอบสภาวะความสมดุลระหว่างความคิด ร่างกาย และความต้องการลึกๆ ของจิตวิญญาณ"
+            }
+        }
+    },
+    {
+        name: "Relationship Dynamics (ความสัมพันธ์ของเราสองคน)",
+        cardCount: 4,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "RELATIONSHIP_CROSS",
+                description: "ส่องกระจกดูความสัมพันธ์แบบเจาะลึก สำรวจความรู้สึกของคุณ ความรู้สึกของเขา ปัญหาหรืออุปสรรคที่ซ่อนอยู่ และแนวโน้มบทสรุปของความรัก"
+            }
+        }
+    },
+    {
+        name: "The Two Paths (ทางแยกแห่งการตัดสินใจ)",
+        cardCount: 5,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "TWO_CHOICES",
+                description: "เหมาะสำหรับสถานการณ์ที่ต้องเลือก วิเคราะห์ภาพรวมของปัญหา ผลลัพธ์ของทางเลือกที่ A และผลลัพธ์ของทางเลือกที่ B เพื่อหาทางที่ดีที่สุด"
+            }
+        }
+    },
+    {
+        name: "The Horseshoe (เกือกม้าไขชะตา)",
+        cardCount: 7,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "HORSESHOE_SPREAD",
+                description: "การวางไพ่รูปเกือกม้า 7 ใบ เพื่อดูอดีต ปัจจุบัน อนาคตที่ซ่อนเร้น อุปสรรค อิทธิพลจากคนรอบข้าง วิธีแก้ไข และผลลัพธ์ที่ชัดเจน"
+            }
+        }
+    },
+    {
+        name: "The Celtic Cross (เซลติกครอส)",
         cardCount: 10,
         isCustom: false,
         spreadType: {
             create: {
                 typeName: "CELTIC_CROSS",
-                description: "การวางไพ่ 10 ใบ มาตรฐานสากลเพื่อวิเคราะห์สถานการณ์อย่างละเอียดในทุกมิติ"
+                description: "รูปแบบการวางไพ่ 10 ใบ ระดับมาสเตอร์พีซ มาตรฐานสากลเพื่อวิเคราะห์ปัญหาอย่างรอบด้าน เจาะลึกถึงจิตใต้สำนึก สภาพแวดล้อม และบทสรุปสุดท้าย"
             }
         }
     }
@@ -111,7 +165,7 @@ async function main() {
     })
     for (const spread of standardSpreadType) {
         await prisma.spread.create({
-            data:spread
+            data: spread
         })
     }
     console.log('-----------------------------------');
