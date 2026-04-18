@@ -43,10 +43,19 @@ model UserInfo {
   userId        Int?
 }
 
+enum CategoryType{
+  GENERAL
+  LOVE
+  CAREER
+  HEALTH
+}
+
 model SpreadType {
   id          Int      @id @default(autoincrement())
   typeName    String   @unique
   description String?
+  icon String?
+  category  CategoryType
   spreads     Spread[]
 }
 

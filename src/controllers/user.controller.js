@@ -136,14 +136,37 @@ export async function getReading(req, res, next) {
     }
 }
 
+export async function getJournal(req,res,next){
+    try {
+        const {readingId} = req.params
+        const userInfoId = req.user?.userInfo?.id
+        const journal = await prisma.savedReading.findFirst({
+            where:{userInfoId: +userInfoId,readingId:+readingId},
+            include: {
+                reading: {
+                    include: {
+                        aiInterpretation: true
+                    }
+                }
+            },
+        })
+        console.log('journal', journal)
+        const {reading,...resJournal} = journal
+        const {deckOrder,...resReading} = reading || {}
+        console.log('resJournal', resJournal)
+        console.log('resReading', resReading)
+        res.status(200).json({ success: true, data: {journal:resJournal,reading:resReading} })
+    } catch (error) {
+        next(error)
+    }
+}
 export async function deleteSavedReading(req, res, next) {
     try {
-        // ID req.params ของ saveReading
-        const { id } = req.params
+        const {readingId} = req.params
         const userInfoId = req.user?.userInfo?.id;
         const existReading = await prisma.savedReading.findFirst({
             where: {
-                id:+id,
+                readingId:+readingId,
                 userInfoId,
             }
         })
@@ -156,7 +179,7 @@ export async function deleteSavedReading(req, res, next) {
         }
         const deletedReading = await prisma.savedReading.delete({
             where:{
-                id:+id
+                readingId:+readingId
             }
         })
         res.status(200).json({

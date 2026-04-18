@@ -48,6 +48,7 @@ const userData = [
 ]
 
 const standardSpreadType = [
+    // ---------------- GENERAL (ทั่วไป) ----------------
     {
         name: "Daily Insight (ไพ่ประจำวัน)",
         cardCount: 1,
@@ -55,7 +56,9 @@ const standardSpreadType = [
         spreadType: {
             create: {
                 typeName: "SINGLE_CARD",
-                description: "การเปิดไพ่ใบเดียวเพื่อตรวจเช็กพลังงาน แนวโน้มประจำวัน หรือรับข้อความแนะนำสั้นๆ จากจักรวาลที่ตรงไปตรงมาที่สุด"
+                category: "GENERAL",
+                description: "การเปิดไพ่ใบเดียวเพื่อตรวจเช็กพลังงาน แนวโน้มประจำวัน หรือรับข้อความแนะนำสั้นๆ จากจักรวาลที่ตรงไปตรงมาที่สุด",
+                icon: "https://api.iconify.design/lucide/sparkles.svg"
             }
         }
     },
@@ -66,7 +69,9 @@ const standardSpreadType = [
         spreadType: {
             create: {
                 typeName: "PAST_PRESENT_FUTURE",
-                description: "วิเคราะห์เส้นเวลาของชีวิต เชื่อมโยงรากฐานจากอดีต เข้าใจสถานการณ์ที่กำลังเผชิญ และเตรียมรับมือกับแนวโน้มที่จะเกิดขึ้นในอนาคต"
+                category: "GENERAL",
+                description: "วิเคราะห์เส้นเวลาของชีวิต เชื่อมโยงรากฐานจากอดีต เข้าใจสถานการณ์ที่กำลังเผชิญ และเตรียมรับมือกับแนวโน้มที่จะเกิดขึ้นในอนาคต",
+                icon: "https://api.iconify.design/lucide/hourglass.svg"
             }
         }
     },
@@ -77,40 +82,22 @@ const standardSpreadType = [
         spreadType: {
             create: {
                 typeName: "SITUATION_ACTION_OUTCOME",
-                description: "เจาะลึกปัญหาเฉพาะหน้า ช่วยวิเคราะห์สถานการณ์ เสนอแนะวิธีรับมือ (Action) และคาดการณ์ผลลัพธ์ (Outcome) เพื่อประกอบการตัดสินใจ"
+                category: "GENERAL",
+                description: "เจาะลึกปัญหาเฉพาะหน้า ช่วยวิเคราะห์สถานการณ์ เสนอแนะวิธีรับมืออย่างมีสติ และคาดการณ์ผลลัพธ์เพื่อประกอบการตัดสินใจ",
+                icon: "https://api.iconify.design/lucide/compass.svg"
             }
         }
     },
     {
-        name: "Mind, Body, Spirit (เช็กสมดุลกายใจ)",
-        cardCount: 3,
-        isCustom: false,
-        spreadType: {
-            create: {
-                typeName: "MIND_BODY_SPIRIT",
-                description: "การอ่านไพ่เพื่อการเยียวยาตนเอง (Self-Healing) ตรวจสอบสภาวะความสมดุลระหว่างความคิด ร่างกาย และความต้องการลึกๆ ของจิตวิญญาณ"
-            }
-        }
-    },
-    {
-        name: "Relationship Dynamics (ความสัมพันธ์ของเราสองคน)",
+        name: "Overcoming Obstacles (ก้าวผ่านอุปสรรค)",
         cardCount: 4,
         isCustom: false,
         spreadType: {
             create: {
-                typeName: "RELATIONSHIP_CROSS",
-                description: "ส่องกระจกดูความสัมพันธ์แบบเจาะลึก สำรวจความรู้สึกของคุณ ความรู้สึกของเขา ปัญหาหรืออุปสรรคที่ซ่อนอยู่ และแนวโน้มบทสรุปของความรัก"
-            }
-        }
-    },
-    {
-        name: "The Two Paths (ทางแยกแห่งการตัดสินใจ)",
-        cardCount: 5,
-        isCustom: false,
-        spreadType: {
-            create: {
-                typeName: "TWO_CHOICES",
-                description: "เหมาะสำหรับสถานการณ์ที่ต้องเลือก วิเคราะห์ภาพรวมของปัญหา ผลลัพธ์ของทางเลือกที่ A และผลลัพธ์ของทางเลือกที่ B เพื่อหาทางที่ดีที่สุด"
+                typeName: "OVERCOMING_OBSTACLES",
+                category: "GENERAL",
+                description: "เมื่อเจอทางตัน! ไพ่ชุดนี้จะช่วยเปิดเผยสิ่งที่ฉุดรั้งคุณไว้ ปัจจัยที่ควบคุมไม่ได้ และข้อแนะนำในการทะลวงผ่านจุดติดขัด",
+                icon: "https://api.iconify.design/lucide/mountain.svg"
             }
         }
     },
@@ -121,7 +108,9 @@ const standardSpreadType = [
         spreadType: {
             create: {
                 typeName: "HORSESHOE_SPREAD",
-                description: "การวางไพ่รูปเกือกม้า 7 ใบ เพื่อดูอดีต ปัจจุบัน อนาคตที่ซ่อนเร้น อุปสรรค อิทธิพลจากคนรอบข้าง วิธีแก้ไข และผลลัพธ์ที่ชัดเจน"
+                category: "GENERAL",
+                description: "การวางไพ่รูปเกือกม้า 7 ใบ เพื่อดูอดีต ปัจจุบัน อนาคตที่ซ่อนเร้น อุปสรรค อิทธิพลจากคนรอบข้าง วิธีแก้ไข และผลลัพธ์ที่ชัดเจน",
+                icon: "https://api.iconify.design/lucide/moon.svg"
             }
         }
     },
@@ -132,11 +121,149 @@ const standardSpreadType = [
         spreadType: {
             create: {
                 typeName: "CELTIC_CROSS",
-                description: "รูปแบบการวางไพ่ 10 ใบ ระดับมาสเตอร์พีซ มาตรฐานสากลเพื่อวิเคราะห์ปัญหาอย่างรอบด้าน เจาะลึกถึงจิตใต้สำนึก สภาพแวดล้อม และบทสรุปสุดท้าย"
+                category: "GENERAL",
+                description: "รูปแบบการวางไพ่ระดับมาสเตอร์พีซ มาตรฐานสากลเพื่อวิเคราะห์ปัญหาอย่างรอบด้าน เจาะลึกถึงจิตใต้สำนึก สภาพแวดล้อม และบทสรุปสุดท้าย",
+                icon: "https://api.iconify.design/lucide/star.svg"
+            }
+        }
+    },
+
+    // ---------------- LOVE (ความรัก) ----------------
+    {
+        name: "Relationship Dynamics (ความสัมพันธ์ของเราสองคน)",
+        cardCount: 4,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "RELATIONSHIP_CROSS",
+                category: "LOVE",
+                description: "ส่องกระจกดูความสัมพันธ์แบบเจาะลึก สำรวจความรู้สึกของคุณ ความรู้สึกของเขา ปัญหาหรืออุปสรรคที่ซ่อนอยู่ และแนวโน้มบทสรุป",
+                icon: "https://api.iconify.design/lucide/heart-handshake.svg"
+            }
+        }
+    },
+    {
+        name: "New Love Potential (รักใหม่จะมาไหม)",
+        cardCount: 3,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "NEW_LOVE_POTENTIAL",
+                category: "LOVE",
+                description: "สำหรับคนโสดที่รอคอยความรัก เช็กความพร้อมของตัวคุณเอง ลักษณะของคนที่กำลังจะเข้ามา และแนวโน้มความสัมพันธ์ในอนาคตอันใกล้",
+                icon: "https://api.iconify.design/lucide/heart.svg"
+            }
+        }
+    },
+    {
+        name: "Healing a Broken Heart (เยียวยาแผลใจ)",
+        cardCount: 4,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "HEALING_HEART",
+                category: "LOVE",
+                description: "ไพ่แห่งการมูฟออน สำรวจความเจ็บปวดที่ยังตกค้าง สิ่งที่ควรปล่อยวาง บทเรียนที่ได้รับ และก้าวต่อไปเพื่อเยียวยาตัวเอง",
+                icon: "https://api.iconify.design/lucide/heart-crack.svg"
+            }
+        }
+    },
+    {
+        name: "The Soulmate Spread (ตามหารักแท้)",
+        cardCount: 5,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "SOULMATE_SPREAD",
+                category: "LOVE",
+                description: "เช็กสเปกและพลังงานดึงดูด! คุณพร้อมเจอรักแท้หรือยัง? เขาคนนั้นคือใคร? และอะไรคือสะพานเชื่อมให้คุณสองคนมาพบกัน?",
+                icon: "https://api.iconify.design/lucide/infinity.svg"
+            }
+        }
+    },
+
+    // ---------------- CAREER (การงานและการเงิน) ----------------
+    {
+        name: "Career Path Readiness (เช็กความพร้อมเรื่องงาน)",
+        cardCount: 3,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "CAREER_PATH",
+                category: "CAREER",
+                description: "เหมาะสำหรับคนที่กำลังหางานใหม่หรือทบทวนงานปัจจุบัน เช็กจุดแข็งของคุณ อุปสรรคในสายอาชีพ และก้าวต่อไปที่ควรเดิน",
+                icon: "https://api.iconify.design/lucide/briefcase.svg"
+            }
+        }
+    },
+    {
+        name: "The Two Paths (ทางแยกแห่งการตัดสินใจ)",
+        cardCount: 5,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "TWO_CHOICES",
+                category: "CAREER",
+                description: "ลังเลระหว่าง 2 ทางเลือก? (เช่น ย้ายงาน vs อยู่ต่อ) วิเคราะห์ภาพรวม ผลลัพธ์ของทางเลือกที่ A และทางเลือกที่ B เพื่อหาทางที่ดีที่สุด",
+                icon: "https://api.iconify.design/lucide/signpost.svg"
+            }
+        }
+    },
+    {
+        name: "Career Advancement (หนทางสู่ความก้าวหน้า)",
+        cardCount: 4,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "CAREER_ADVANCEMENT",
+                category: "CAREER",
+                description: "อยากเลื่อนขั้นหรือเพิ่มเงินเดือน? ดูว่าหัวหน้ามองคุณอย่างไร สิ่งที่คุณต้องพัฒนา ข้อควรระวัง และศักยภาพในการเติบโตของคุณ",
+                icon: "https://api.iconify.design/lucide/trending-up.svg"
+            }
+        }
+    },
+
+    // ---------------- HEALTH (สุขภาพกายและใจ) ----------------
+    {
+        name: "Mind, Body, Spirit (เช็กสมดุลกายใจ)",
+        cardCount: 3,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "MIND_BODY_SPIRIT",
+                category: "HEALTH",
+                description: "การอ่านไพ่เพื่อการเยียวยาตนเอง (Self-Healing) ตรวจสอบสภาวะความสมดุลระหว่างความคิด ร่างกาย และความต้องการลึกๆ ของจิตวิญญาณ",
+                icon: "https://api.iconify.design/lucide/leaf.svg"
+            }
+        }
+    },
+    {
+        name: "Mental Health Check-in (เช็กสุขภาพจิตใจ)",
+        cardCount: 3,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "MENTAL_HEALTH_CHECK",
+                category: "HEALTH",
+                description: "ดึงความกังวลที่ซ่อนอยู่ออกมาทำความเข้าใจ อะไรที่ทำให้คุณเครียดในช่วงนี้? สิ่งใดที่จะช่วยปลอบประโลมใจ? และคำแนะนำเพื่อสร้างพลังบวก",
+                icon: "https://api.iconify.design/lucide/brain.svg"
+            }
+        }
+    },
+    {
+        name: "Stress Relief (ปลดล็อกความเครียด)",
+        cardCount: 4,
+        isCustom: false,
+        spreadType: {
+            create: {
+                typeName: "STRESS_RELIEF",
+                category: "HEALTH",
+                description: "วิเคราะห์ต้นตอของความเหนื่อยล้า สิ่งที่คุณแบกรับไว้มากเกินไป วิธีตัดความรุงรังออกจากชีวิต และทิศทางสู่ความสงบสุข",
+                icon: "https://api.iconify.design/lucide/wind.svg"
             }
         }
     }
-]
+];
 
 async function main() {
     console.log("Cleaning Table in process please wait....")

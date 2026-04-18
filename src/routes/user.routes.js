@@ -1,6 +1,6 @@
 import express from "express";
 import { authenticate } from "../middlewares/auth.middlewares.js";
-import { deleteSavedReading, getHistory, getMe, getReading, saveReading, updateMe } from "../controllers/user.controller.js";
+import { deleteSavedReading, getHistory, getJournal, getMe, getReading, saveReading, updateMe } from "../controllers/user.controller.js";
 
 
 const userRoutes = express.Router()
@@ -11,6 +11,7 @@ userRoutes.patch('/me',authenticate,updateMe)
 userRoutes.get('/history',authenticate,getHistory)
 userRoutes.post('/saved-readings',authenticate,saveReading)
 userRoutes.get('/saved-readings',authenticate,getReading)
-userRoutes.delete('/saved-readings/:id',authenticate,deleteSavedReading)
+userRoutes.get('/saved-readings/:readingId',authenticate,getJournal)
+userRoutes.delete('/saved-readings/:readingId',authenticate,deleteSavedReading)
 
 export default userRoutes

@@ -6,8 +6,11 @@ import readingRoutes from './routes/reading.routes.js';
 import userRoutes from './routes/user.routes.js';
 import notfoundMiddlewares from './middlewares/notfound.middlewares.js';
 import libraryRoutes from './routes/library.routes.js';
+import helmet from 'helmet';
 
 const app = express()
+
+app.use(helmet())
 
 app.use(cors({
     origin: ["http://localhost:5173"],
