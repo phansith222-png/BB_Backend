@@ -11,3 +11,19 @@ export async function findReading(readingId) {
         where:{id:Number(readingId)}
     })
 }
+
+export async function findReadingForShare(readingId) {
+    return await prisma.reading.findFirst({
+        where: { id: Number(readingId) },
+        include: {
+            spread: {
+                include: { spreadType: true }
+            },
+            readCards: {
+                orderBy: { position: 'asc' },
+                include: { card: true }
+            },
+            aiInterpretation: true
+        }
+    })
+}

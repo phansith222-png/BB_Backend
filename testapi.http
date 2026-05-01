@@ -1,6 +1,5 @@
 @base_url = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTc3NTEwMzk0OSwiZXhwIjoxNzc1MTkwMzQ5fQ.C0B3j7x7fa6uMJUt9fPtN5WPUIPBQDI2Qm0lCBVWfq4
-POST {{base_url}}/api/auth/register
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTc3NzYyNTExMywiZXhwIjoxNzc3NzExNTEzfQ.QBzXAlZyuHyBOT9RioxjsKk4BXbfqcTkevhDAdlvy8Q
 Content-Type: application/json
 
 {
@@ -55,7 +54,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "readingId":20,
+    "readingId":36,
     "times":23,
     "allowReversed":true
 }
@@ -66,7 +65,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "readingId":64,
+    "readingId":36,
     "position":7
 }
 
@@ -77,7 +76,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "readingId":64,
+    "readingId":36,
     "selectId":[
          {"id":1,"isReversed": false},
          {"id":3,"isReversed": true},
@@ -91,7 +90,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "readingId":64,
+    "readingId":36,
     "spreadType": "TarotOfTheDay",
   "question": "ไดรฟ์จะทำงานเสร็จ",
   "card": [
@@ -124,6 +123,10 @@ Content-Type: application/json
     }
   ]
 }
+
+### GET ให้ข้อมูลแสดงว่าจะแชร์ออกไปใน Social
+GET {{base_url}}/api/readings/share-image/36
+Authorization: Bearer {{token}}
 
 ### GET Spread ทั้งหมด
 GET {{base_url}}/api/readings/spread

@@ -1,7 +1,8 @@
 import createHttpErrors from 'http-errors'
-import { findReading, findSpread } from '../services/reading.service.js'
+import { findReading, findSpread, findReadingForShare } from '../services/reading.service.js'
 import { prisma } from '../lib/prisma.js'
 import { askGemini } from '../utils/ai.js'
+import { generateShareImageBuffer } from '../utils/imageGenerator.js'
 
 
 export async function initial(req, res, next) {
@@ -164,6 +165,14 @@ export async function aiInterpret(req, res, next) {
                 where: { id: readingId },
                 data: {
                     status: "COMPLETED",
+                    readCards: {
+                        deleteMany: {},
+                        create: card.map((c, i) => ({
+                            cardId: c.id,
+                            isReversed: targetCard[i].isReversed,
+                            position: i + 1
+                        }))
+                    },
                     aiInterpretation: {
                         upsert: {
                             update: {
@@ -226,6 +235,33 @@ export async function getSpreadId(req,res,next){
             success : true,
             data:spread
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export async function generateShareImage(req, res, next) {
+    try {
+        const readingId = Number(req.params.readingId)
+        if (isNaN(readingId)) {
+            return next(createHttpErrors[400]('Invalid reading ID'))
+        }
+        const reading = await findReadingForShare(readingId)
+        if (!reading) {
+            return next(createHttpErrors[404]('Reading not found'))
+        }
+        if (reading.status !== 'COMPLETED') {
+            return next(createHttpErrors[400]('Reading is not completed yet'))
+        }
+        if (!reading.aiInterpretation) {
+            return next(createHttpErrors[400]('Reading has no AI interpretation'))
+        }
+        const mode = req.query.mode === 'story' ? 'story' : 'feed'
+        const imageBuffer = await generateShareImageBuffer(reading, mode)
+        res.set('Content-Type', 'image/png')
+        res.set('Content-Length', imageBuffer.length)
+        res.set('Cache-Control', 'public, max-age=3600')
+        res.send(imageBuffer)
     } catch (error) {
         next(error)
     }
