@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { prisma } from '../src/lib/prisma.js';
+import prisma from '../src/lib/prisma.js';
 import { cardData } from './cardData.js';
 
 const hashedpassword = () => bcrypt.hashSync('123456', 10)
@@ -267,19 +267,9 @@ const standardSpreadType = [
 
 async function main() {
     console.log("Cleaning Table in process please wait....")
-    await prisma.$transaction([
-        prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 0;'),
-        prisma.$executeRawUnsafe('TRUNCATE TABLE `User` ;'),
-        prisma.$executeRawUnsafe('TRUNCATE TABLE `UserInfo` ;'),
-        prisma.$executeRawUnsafe('TRUNCATE TABLE `Spread` ;'),
-        prisma.$executeRawUnsafe('TRUNCATE TABLE `Card` ;'),
-        prisma.$executeRawUnsafe('TRUNCATE TABLE `Reading` ;'),
-        prisma.$executeRawUnsafe('TRUNCATE TABLE `ReadCard` ;'),
-        prisma.$executeRawUnsafe('TRUNCATE TABLE `AiInterpretation` ;'),
-        prisma.$executeRawUnsafe('TRUNCATE TABLE `SavedReading` ;'),
-        prisma.$executeRawUnsafe('TRUNCATE TABLE `SpreadType` ;'),
-        prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 1;'),
-    ])
+    await prisma.$executeRawUnsafe(
+        'TRUNCATE TABLE "User", "UserInfo", "Spread", "Card", "Reading", "ReadCard", "AiInterpretation", "SavedReading", "SpreadType" CASCADE;'
+    )
     console.log('Start seeding process ...')
     for (const user of userData) {
         await prisma.user.create({

@@ -1,5 +1,5 @@
 import createHttpErrors from 'http-errors'
-import { prisma } from '../lib/prisma.js'
+import prisma from '../lib/prisma.js'
 import dayjs from 'dayjs'
 export async function dailyCheck(req, res, next) {
     try {

@@ -1,14 +1,14 @@
-import { prisma } from "../lib/prisma.js";
+import prisma from "../lib/prisma.js";
 
 export async function findSpread(spreadId) {
     return await prisma.spread.findFirst({
-        where:{id:Number(spreadId)}
+        where: { id: Number(spreadId) }
     })
 }
 
 export async function findReading(readingId) {
     return await prisma.reading.findFirst({
-        where:{id:Number(readingId)}
+        where: { id: Number(readingId) }
     })
 }
 

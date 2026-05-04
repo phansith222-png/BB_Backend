@@ -10,7 +10,7 @@ export async function authenticate(req, res, next) {
     // console.log(authorization)
     const token = authorization.split(" ")[1]
     if (!token) {
-        return next(createHttpErrors[401])('Unauthorized 2')
+        return next(createHttpErrors[401]('Unauthorized'))
     }
     const payload = await verifyToken(token)
 
@@ -35,5 +35,6 @@ export async function optionalAuth(req, res, next) {
         next()
     } catch (error) {
         req.user = null
+        return next()
     }
 }   

@@ -1,6 +1,6 @@
 import createHttpErrors from 'http-errors'
 import { findReading, findSpread, findReadingForShare } from '../services/reading.service.js'
-import { prisma } from '../lib/prisma.js'
+import prisma from '../lib/prisma.js'
 import { askGemini } from '../utils/ai.js'
 import { generateShareImageBuffer } from '../utils/imageGenerator.js'
 
@@ -205,35 +205,35 @@ export async function aiInterpret(req, res, next) {
     }
 }
 
-export async function getSpread (req,res,next){
+export async function getSpread(req, res, next) {
     try {
         const allSpreads = await prisma.spread.findMany({
             include: {
                 spreadType: true
             }
         })
-        if(!allSpreads){
+        if (!allSpreads) {
             return next(createHttpErrors[400]('Invalid all Spread'))
         }
         res.status(200).json({
-            success :true,
-            data:allSpreads
+            success: true,
+            data: allSpreads
         })
     } catch (error) {
         next(error)
     }
 }
 
-export async function getSpreadId(req,res,next){
+export async function getSpreadId(req, res, next) {
     try {
-        const {id} = req.params
+        const { id } = req.params
         const spread = await findSpread(id)
-        if(!spread) {
+        if (!spread) {
             return next(createHttpErrors[400]("Cannot find spread"))
         }
         res.status(200).json({
-            success : true,
-            data:spread
+            success: true,
+            data: spread
         })
     } catch (error) {
         next(error)

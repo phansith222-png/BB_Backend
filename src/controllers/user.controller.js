@@ -1,5 +1,5 @@
 import { success } from "zod"
-import { prisma } from "../lib/prisma.js"
+import  prisma  from "../lib/prisma.js"
 import { updateMeSchema } from "../validations/prisma.js"
 import { getUserBy } from "../services/user.service.js"
 
