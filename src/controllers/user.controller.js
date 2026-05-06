@@ -81,7 +81,7 @@ export async function getHistory(req, res, next) {
                 }
             });
             const {deckOrder,...resHistory} = history[0]
-        
+
             return res.status(200).json({ success: true, data: resHistory });
         }
     } catch (error) {

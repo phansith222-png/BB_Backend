@@ -12,21 +12,26 @@ const app = express()
 
 app.use(helmet())
 
+const allowedOrigins = [
+    process.env.FRONTEND_URL || 'https://bb-frontend-sigma.vercel.app',
+    ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:5173'] : []),
+]
+
 app.use(cors({
-    origin: [process.env.FRONTEND_URL || 'https://bb-frontend-sigma.vercel.app' || "http://localhost:5173"],
-    methods:["GET","POST","PUT","PATCH","DELETE"],
-    credentials:true
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true
 }))
 
 app.use(express.json())
 
-app.use('/api/auth',authRoutes)
+app.use('/api/auth', authRoutes)
 
-app.use('/api/readings',readingRoutes)
+app.use('/api/readings', readingRoutes)
 
-app.use('/api/cards',libraryRoutes)
+app.use('/api/cards', libraryRoutes)
 
-app.use('/api/users',userRoutes)
+app.use('/api/users', userRoutes)
 
 
 app.use(notfoundMiddlewares)
