@@ -268,7 +268,7 @@ const standardSpreadType = [
 async function main() {
     console.log("Cleaning Table in process please wait....")
     await prisma.$executeRawUnsafe(
-        'TRUNCATE TABLE "User", "UserInfo", "Spread", "Card", "Reading", "ReadCard", "AiInterpretation", "SavedReading", "SpreadType" CASCADE;'
+        'TRUNCATE TABLE "User", "UserInfo", "Spread", "Card", "Reading", "ReadCard", "AiInterpretation", "SavedReading", "SpreadType" RESTART IDENTITY CASCADE;'
     )
     console.log('Start seeding process ...')
     for (const user of userData) {
