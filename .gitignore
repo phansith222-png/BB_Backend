@@ -4,3 +4,5 @@ node_modules
 
 /src/generated/prisma
 CLAUDE.md
+.claude/settings.local.json
+PLAN_FRONTEND_REGENERATE.md

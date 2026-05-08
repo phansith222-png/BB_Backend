@@ -20,13 +20,9 @@
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
-- [API Reference](#api-reference)
 - [Frontend Pages](#frontend-pages)
 - [Security](#security)
 - [Roadmap](#roadmap)
-- [Deployment Checklist](#deployment-checklist)
-
 ---
 
 ## About
@@ -55,7 +51,7 @@ Whether you're seeking clarity on love, career, health, or life in general, BigB
 
 ### 👤 User Account
 - Secure registration with email or mobile phone + username
-- JWT-authenticated sessions (1-day token, HS256)
+- JWT-authenticated sessions
 - Edit your profile: name, zodiac sign, date of birth, profile image
 - **Reading history** — every session is stored and accessible
 - **Saved readings journal** — bookmark readings and add personal notes
@@ -116,7 +112,7 @@ bigbode/
 │   │   ├── lib/prisma.js           # Prisma client
 │   │   └── assets/fonts/           # Thai fonts (Sarabun) for image gen
 │   └── prisma/
-│       ├── schema.prisma           # 13 database models
+│       ├── schema.prisma           # Database models
 │       ├── seed.js                 # Tarot card seeder (78 cards)
 │       └── migrations/
 │
@@ -161,7 +157,7 @@ npm install
 
 ### 4. Configure environment variables
 
-Create `bb_backend/.env` — see [Environment Variables](#environment-variables) for all required values.
+Create `bb_backend/.env` with your database, JWT, Gemini, and CORS settings.
 
 Create `bb_frontend/.env.local` for local dev:
 ```
@@ -190,70 +186,6 @@ npm run dev
 
 ---
 
-## Environment Variables
-
-### Backend (`bb_backend/.env`)
-
-| Variable | Required | Description |
-|---|---|---|
-| `PORT` | No | Port for the Express server (default: 3000) |
-| `DATABASE_URL` | **Yes** | PostgreSQL connection string |
-| `JWT_SECRET` | **Yes** | Secret key for signing JWT tokens (use a long random string) |
-| `GEMINI_API_KEY` | **Yes** | Google Gemini API key for AI interpretations |
-| `FRONTEND_URL` | No | Production frontend URL for CORS (default: http://localhost:5173) |
-| `NODE_ENV` | No | Set to `production` to suppress error logs |
-
-### Frontend (`bb_frontend/.env.local` or `.env.production`)
-
-| Variable | Required | Description |
-|---|---|---|
-| `VITE_API_URL` | No | Backend API base URL (default: http://localhost:3000/api) |
-
----
-
-## API Reference
-
-All endpoints are prefixed with `/api`. JWT token must be sent as `Authorization: Bearer <token>`.
-
-### Authentication
-| Method | Path | Auth | Body | Description |
-|---|---|---|---|---|
-| `POST` | `/auth/register` | None | `identity, username, password, confirmPassword, firstName?, lastName?, zodiac?, dateOfBirth?` | Register new user |
-| `POST` | `/auth/login` | None | `username, password` | Login — returns `token`, `user`, `profile` |
-
-### User
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| `GET` | `/users/me` | Required | Get own profile |
-| `PATCH` | `/users/me` | Required | Update profile (name, zodiac, dateOfBirth, profileImage) |
-| `GET` | `/users/history` | Required | All past readings |
-| `POST` | `/users/saved-readings` | Required | Save a reading to journal |
-| `GET` | `/users/saved-readings` | Required | List all saved readings |
-| `GET` | `/users/saved-readings/:readingId` | Required | Get one saved reading with detail |
-| `DELETE` | `/users/saved-readings/:readingId` | Required | Delete a saved reading |
-
-### Card Library
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| `GET` | `/cards` | Required | List all 78 cards |
-| `GET` | `/cards/:id` | Required | Get single card with full detail |
-
-### Readings
-> `Optional*` — works without auth (guest mode), but saves history when authenticated.
-
-| Method | Path | Auth | Body | Description |
-|---|---|---|---|---|
-| `POST` | `/readings/init` | Optional* | `spreadId, question?` | Start a new reading session |
-| `POST` | `/readings/shuffle` | Optional* | `readingId, times` | Shuffle the deck |
-| `POST` | `/readings/cut` | Optional* | `readingId, position` | Cut the deck |
-| `POST` | `/readings/pick` | Optional* | `readingId, SelectId` | Pick a card |
-| `POST` | `/readings/ai-interpret` | Optional* | `readingId` | Request AI interpretation |
-| `GET` | `/readings/spread` | Optional* | — | List all spread types |
-| `GET` | `/readings/spread/:id` | Optional* | — | Get spread detail |
-| `GET` | `/readings/share-image/:readingId` | Optional* | — | Generate shareable PNG image |
-
----
-
 ## Frontend Pages
 
 | Route | Page | Auth Required | Description |
@@ -274,17 +206,15 @@ BigBode is built with multiple layers of protection:
 
 | Protection | How |
 |---|---|
-| **HTTP Security Headers** | `helmet` — sets XSS protection, CSP, HSTS, and more on every response |
+| **HTTP Security Headers** | Security headers set on every response |
 | **CORS** | Locked to a specific allowed origin; configurable via `FRONTEND_URL` env var |
-| **Password Hashing** | `bcrypt` — passwords are never stored in plain text |
-| **JWT Authentication** | HS256 tokens with 1-day expiry; stripped from all user-facing responses |
-| **Input Validation** | `zod` schemas on every endpoint — malformed requests are rejected with 400 |
-| **SQL Injection** | Prisma ORM uses parameterized queries — immune by design |
-| **Role-Based Access** | `ADMIN` and `USER` roles enforced at the database level |
+| **Password Hashing** | Passwords are hashed at rest — never stored in plain text |
+| **JWT Authentication** | Short-lived tokens; never returned in user-facing responses after issue |
+| **Input Validation** | Schema validation on every endpoint — malformed requests are rejected |
+| **SQL Injection** | ORM with parameterized queries — immune by design |
+| **Role-Based Access** | Access control enforced at the database level |
 | **No Sensitive Leaks** | Passwords, tokens, and stack traces are never returned to the client |
-| **Daily Rate Limiting** | `dailyCheck` middleware prevents more than one daily reading per user per day |
-
-> **Note:** Rate limiting on login/register (brute-force protection) is planned for a future release.
+| **Rate Limiting** | Applied on authentication and all API endpoints to prevent abuse |
 
 ---
 
@@ -305,46 +235,6 @@ BigBode is built with multiple layers of protection:
 
 ### Coming Next 🚧
 - [ ] **Individual Card Interpretation in Library** — when browsing any card in `/library/:id`, users will be able to ask BigBen for a personal interpretation of that single card, independent of a full spread. No shuffle needed — just you and the card. Reuses the existing Gemini AI integration with a new single-card context prompt.
-- [ ] **Rate limiting** on login/register to prevent brute-force attacks (`express-rate-limit`)
 - [ ] **Admin dashboard** — manage and create spread types through a UI
 - [ ] **AI chat follow-up** — continue the conversation with BigBen after a reading
 
----
-
-## Deployment Checklist
-
-Use this checklist before going live.
-
-### Environment (set these yourself — never commit `.env` files)
-- [ ] `bb_backend/.env` has all required vars: `PORT`, `DATABASE_URL`, `JWT_SECRET`, `GEMINI_API_KEY`, `FRONTEND_URL`, `NODE_ENV=production`
-- [ ] `bb_frontend/.env.production` has `VITE_API_URL=https://your-api-domain/api`
-- [ ] `JWT_SECRET` is a long, random string (not a placeholder)
-- [ ] `.env` is listed in `.gitignore` in both directories
-
-### Database
-- [ ] `npx prisma migrate deploy` — run all migrations
-- [ ] `npx prisma db seed` — seed all 78 tarot cards
-- [ ] `npx prisma generate` — regenerate Prisma client
-- [ ] Database is accessible from the backend host (firewall / VPC rules)
-- [ ] Automated backups are configured
-
-### Assets
-- [ ] Thai font files (`Sarabun`) are present at `bb_backend/src/assets/fonts/` on the production server
-
-### Frontend Build
-- [ ] `npm run lint` — no ESLint errors
-- [ ] `npm run build` — clean `dist/` output, no build errors
-
-### Infrastructure
-- [ ] Backend hosted (Railway / Render / Fly.io / VPS)
-- [ ] Frontend static files hosted (Vercel / Netlify / Cloudflare Pages)
-- [ ] Custom domain configured with HTTPS (TLS) for both
-
-### Smoke Test After Deploy
-- [ ] Frontend loads in browser — no console errors
-- [ ] Register a new account
-- [ ] Log in — JWT is issued
-- [ ] Browse the card library
-- [ ] Complete a full reading: shuffle → cut → pick → AI interpret
-- [ ] Shareable image generates correctly
-- [ ] Save a reading, add a note, then delete it
