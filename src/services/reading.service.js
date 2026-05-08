@@ -12,6 +12,14 @@ export async function findReading(readingId) {
     })
 }
 
+export async function upsertAiInterpretation(readingId, { summary, detail, mood_score }) {
+    return prisma.aiInterpretation.upsert({
+        where: { readingId },
+        update: { summary, detail, mood_score },
+        create: { readingId, summary, detail, mood_score }
+    })
+}
+
 export async function findReadingForShare(readingId) {
     return await prisma.reading.findFirst({
         where: { id: Number(readingId) },

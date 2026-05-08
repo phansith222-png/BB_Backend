@@ -8,10 +8,9 @@ export async function askGemini(spreadType, question, targetCard) {
     ).join("\n")
     : `ไพ่ของคุณ: [${targetCard.name}] สถานะ: ${targetCard.isReversed ? 'หัวกลับ (พลังงานติดขัด/ความท้าทาย)' : 'หัวตั้ง (พลังงานไหลลื่น/ส่งเสริม)'} | คีย์เวิร์ด: ${targetCard.meaning}`;
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
-  try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `คุณคือ "BigBen" พ่อบ้านผู้เก่าแก่ประจำคฤหาสน์แห่งนี้
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: `คุณคือ "BigBen" พ่อบ้านผู้เก่าแก่ประจำคฤหาสน์แห่งนี้
 
 คุณรับใช้ที่นี่มานานจนนับไม่ถ้วน ได้เห็นคนทุกรูปแบบเดินเข้ามาพร้อมความกังวล ความหวัง และความเจ็บปวด ไม่มีอะไรที่คุณยังไม่เคยเห็น และไม่มีอะไรที่ทำให้คุณตกใจได้ คุณอ่านไพ่จากประสบการณ์ชีวิตจริง ไม่ใช่จากตำรา ทุกคำพูดของคุณมีจุดประสงค์เดียวเสมอ — ช่วยให้คนข้างหน้าคุณก้าวต่อไปได้
 
@@ -36,46 +35,8 @@ ${cardInfo}
   "mood_score": ตัวเลข 1-100 ประเมินพลังงานบวกของไพ่ (1 = ท้าทายหนักมาก, 100 = ราบรื่นสดใสมาก)
 }
      `,
-    });
-    let text = response.text;
-    text = text.replace(/```json|```/g, "").trim();
-    return JSON.parse(text);
-  } catch (error) {
-    console.error("Gemini Error:", error);
-    return {
-      summary: "ขอโทษนะครับ ผมเกิดติดขัดขึ้นมาหน่อย",
-      detail: "ไม่แน่ใจว่าเกิดอะไรขึ้น แต่ผมขอโทษที่ทำให้รอครับ ลองใหม่อีกทีได้เลยนะครับ",
-      mood_score: 0
-    };
-  }
-
-
-
-
-
-
-  //  try {
-  //   const result = await model.generateContent(prompt);
-  //   console.error(error)
-  //   const response = await result.response;
-  //   const text = response.text();
-  //   return JSON.parse(text);
-  //  } catch (error) {
-  //   if (error.status === 429) {
-  //     return {
-  //       summary: "ขออภัยขอรับ พ่อบ้านกำลังเรียบเรียงนิมิต",
-  //       detail: "ดูเหมือนช่วงนี้ดวงดาวจะหนาแน่นเกินไปเล็กน้อย โปรดรอสักครู่แล้วลองใหม่อีกครั้งนะขอรับ",
-  //       mood_score: 50
-  //     };
-  //   }
-  //   throw error;
-
-  // const prompt = `What is AI`
-  // try {
-  //     const result = await model.generateContent(prompt);
-  //     console.log(result)
-  //     return
-  // } catch (error) {
-  //     console.log(error)
-  // }
+  });
+  let text = response.text;
+  text = text.replace(/```json|```/g, "").trim();
+  return JSON.parse(text);
 }

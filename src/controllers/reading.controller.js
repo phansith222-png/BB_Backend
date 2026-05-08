@@ -1,5 +1,5 @@
 import createHttpErrors from 'http-errors'
-import { findReading, findSpread, findReadingForShare } from '../services/reading.service.js'
+import { findReading, findSpread, findReadingForShare, upsertAiInterpretation } from '../services/reading.service.js'
 import prisma from '../lib/prisma.js'
 import { askGemini } from '../utils/ai.js'
 import { generateShareImageBuffer } from '../utils/imageGenerator.js'
@@ -45,7 +45,6 @@ export async function shuffle(req, res, next) {
     try {
         const { readingId, times, allowReversed } = req.body
         const reading = await findReading(readingId)
-        console.log(reading)
         if (!reading) {
             return next(createHttpErrors[400]("Invalid Shuffle Session"))
         }
@@ -76,7 +75,8 @@ export async function shuffle(req, res, next) {
 export async function cut(req, res, next) {
     try {
         const { readingId, position } = req.body
-        if (!position) {
+        const positionNum = Number(position)
+        if (!Number.isInteger(positionNum) || positionNum <= 0) {
             return next(createHttpErrors[400]('please select position'))
         }
         const reading = await findReading(readingId)
@@ -86,7 +86,7 @@ export async function cut(req, res, next) {
             const backPart = deck.slice(position)
             return [...backPart, ...firstPart]
         }
-        const newDeck = cutDeck(deck, Number(position))
+        const newDeck = cutDeck(deck, positionNum)
         const updateDeck = await prisma.reading.update({
             where: { id: readingId },
             data: {
@@ -108,6 +108,9 @@ export async function cut(req, res, next) {
 export async function pick(req, res, next) {
     try {
         const { readingId, selectId } = req.body
+        if (!Array.isArray(selectId) || selectId.length === 0) {
+            return next(createHttpErrors[400]('selectId must be a non-empty array'))
+        }
         const reading = await findReading(readingId)
         if (!reading) {
             return next(createHttpErrors[400]("Invalid Pick The Card session"))
@@ -159,7 +162,12 @@ export async function aiInterpret(req, res, next) {
                 meaning: isReversed ? detail?.reverse_Mean : detail?.upright_Mean
             };
         });
-        const responseAI = await askGemini(spreadType, question, targetCard)
+        let responseAI;
+        try {
+            responseAI = await askGemini(spreadType, question, targetCard)
+        } catch (error) {
+            return next(createHttpErrors[503]("การตีความล้มเหลว กรุณาลองใหม่อีกครั้ง"))
+        }
         if (req.user) {
             await prisma.reading.update({
                 where: { id: readingId },
@@ -173,29 +181,10 @@ export async function aiInterpret(req, res, next) {
                             position: i + 1
                         }))
                     },
-                    aiInterpretation: {
-                        upsert: {
-                            update: {
-                                summary: responseAI.summary,
-                                detail: responseAI.detail,
-                                mood_score: responseAI.mood_score
-                            },
-                            create: {
-                                summary: responseAI.summary,
-                                detail: responseAI.detail,
-                                mood_score: responseAI.mood_score
-                            }
-                        }
-                    },
                 }
             })
+            await upsertAiInterpretation(readingId, responseAI)
         }
-        // if(currentUser === null){
-        //     res.status(200).json({
-        //     success : true,
-        //     data: responseAI
-        // })
-
         res.status(200).json({
             success: true,
             data: responseAI

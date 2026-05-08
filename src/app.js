@@ -7,6 +7,25 @@ import userRoutes from './routes/user.routes.js';
 import notfoundMiddlewares from './middlewares/notfound.middlewares.js';
 import libraryRoutes from './routes/library.routes.js';
 import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => req.method === 'OPTIONS',
+    message: { status: 429, message: 'Too many requests, please try again later.' }
+})
+
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 500,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => req.method === 'OPTIONS',
+    message: { status: 429, message: 'Too many requests, please try again later.' }
+})
 
 const app = express()
 
@@ -23,7 +42,10 @@ app.use(cors({
     credentials: true
 }))
 
-app.use(express.json())
+app.use(express.json({ limit: '10kb' }))
+
+app.use('/api/auth', authLimiter)
+app.use('/api', apiLimiter)
 
 app.use('/api/auth', authRoutes)
 

@@ -5,7 +5,7 @@ import { getUserBy } from '../services/user.service.js'
 export async function authenticate(req, res, next) {
     const authorization = req.headers.authorization
     if (!authorization || !authorization.includes('Bearer ')) {
-        return next(createHttpErrors[401]('Unauthorized 1'))
+        return next(createHttpErrors[401]('Unauthorized'))
     }
     // console.log(authorization)
     const token = authorization.split(" ")[1]

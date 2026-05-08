@@ -1,4 +1,4 @@
-import { success } from "zod"
+import createHttpErrors from 'http-errors'
 import  prisma  from "../lib/prisma.js"
 import { updateMeSchema } from "../validations/prisma.js"
 import { getUserBy } from "../services/user.service.js"
@@ -18,10 +18,8 @@ export async function updateMe(req, res, next) {
         const userId = user.id
         // console.log(userInfo)
         const userInfoId = userInfo.id
-        console.log(req.body)
         const payload = updateMeSchema.parse(req.body)
         const { firstName, lastName, profileImage, zodiac, dateOfBirth, ...userData } = payload;
-        console.log(payload)
         const newProfile = await prisma.user.update({
             where: { id: userId },
             data: {
@@ -54,7 +52,6 @@ export async function updateMe(req, res, next) {
 export async function getHistory(req, res, next) {
     try {
         const user = req.user;
-        console.log(user)
         if (user) {
             const history = await prisma.reading.findMany({
                 where: {
@@ -91,9 +88,14 @@ export async function getHistory(req, res, next) {
 export async function saveReading(req, res, next) {
     try {
         const { user, userInfo } = req.user
-        console.log('userInfo', userInfo)
         const { readingId, note } = req.body
-        console.log('readingId', readingId)
+
+        const readingOwnership = await prisma.reading.findFirst({
+            where: { id: +readingId, userInfoId: +userInfo.id }
+        })
+        if (!readingOwnership) {
+            return next(createHttpErrors[403]('Forbidden'))
+        }
 
         const saved = await prisma.savedReading.upsert({
             where: { readingId: +readingId },
@@ -150,11 +152,8 @@ export async function getJournal(req,res,next){
                 }
             },
         })
-        console.log('journal', journal)
         const {reading,...resJournal} = journal
         const {deckOrder,...resReading} = reading || {}
-        console.log('resJournal', resJournal)
-        console.log('resReading', resReading)
         res.status(200).json({ success: true, data: {journal:resJournal,reading:resReading} })
     } catch (error) {
         next(error)
@@ -170,17 +169,11 @@ export async function deleteSavedReading(req, res, next) {
                 userInfoId,
             }
         })
-        console.log(existReading)
         if (!existReading) {
-            return res.status(404).json({
-                success: false,
-                message: "Saved reading not found or access denied."
-            });
+            return next(createHttpErrors[403]('Forbidden'))
         }
         const deletedReading = await prisma.savedReading.delete({
-            where:{
-                readingId:+readingId
-            }
+            where: { id: existReading.id }
         })
         res.status(200).json({
             success:true,
