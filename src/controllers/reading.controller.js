@@ -3,15 +3,13 @@ import { findReading, findSpread, findReadingForShare, upsertAiInterpretation } 
 import prisma from '../lib/prisma.js'
 import { askGemini } from '../utils/ai.js'
 import { generateShareImageBuffer } from '../utils/imageGenerator.js'
+import { initReadingSchema, shuffleSchema, cutSchema, pickSchema, aiInterpretSchema } from '../validations/prisma.js'
 
 
 export async function initial(req, res, next) {
     try {
         const { user, userInfo } = req.user || {}
-        const { spreadId, question, allowReversed, isDaily } = req.body
-        if (!spreadId || !question) {
-            return next(createHttpErrors[401]('Please provide Spreadtype and your question'))
-        }
+        const { spreadId, question, allowReversed, isDaily } = await initReadingSchema.parseAsync(req.body)
         const spreadInfo = await findSpread(spreadId)
         if (!spreadInfo) {
             return next(createHttpErrors[401]('Cannot find this Spread Type'))
@@ -43,7 +41,7 @@ export async function initial(req, res, next) {
 
 export async function shuffle(req, res, next) {
     try {
-        const { readingId, times, allowReversed } = req.body
+        const { readingId, allowReversed } = await shuffleSchema.parseAsync(req.body)
         const reading = await findReading(readingId)
         if (!reading) {
             return next(createHttpErrors[400]("Invalid Shuffle Session"))
@@ -74,11 +72,7 @@ export async function shuffle(req, res, next) {
 
 export async function cut(req, res, next) {
     try {
-        const { readingId, position } = req.body
-        const positionNum = Number(position)
-        if (!Number.isInteger(positionNum) || positionNum <= 0) {
-            return next(createHttpErrors[400]('please select position'))
-        }
+        const { readingId, position: positionNum } = await cutSchema.parseAsync(req.body)
         const reading = await findReading(readingId)
         const deck = reading.deckOrder
         const cutDeck = (arr, position) => {
@@ -96,7 +90,7 @@ export async function cut(req, res, next) {
         })
         res.status(200).json({
             success: true,
-            position: position,
+            position: positionNum,
             status: updateDeck.status,
             deckOrder: updateDeck.deckOrder
         })
@@ -107,10 +101,7 @@ export async function cut(req, res, next) {
 
 export async function pick(req, res, next) {
     try {
-        const { readingId, selectId } = req.body
-        if (!Array.isArray(selectId) || selectId.length === 0) {
-            return next(createHttpErrors[400]('selectId must be a non-empty array'))
-        }
+        const { readingId, selectId } = await pickSchema.parseAsync(req.body)
         const reading = await findReading(readingId)
         if (!reading) {
             return next(createHttpErrors[400]("Invalid Pick The Card session"))
@@ -139,7 +130,7 @@ export async function pick(req, res, next) {
 
 export async function aiInterpret(req, res, next) {
     try {
-        const { readingId, spreadType, question, card } = req.body
+        const { readingId, spreadType, question, card } = await aiInterpretSchema.parseAsync(req.body)
         const reading = await findReading(readingId)
         if (!reading) {
             return next(createHttpErrors[400]("Invalid AI interpret session"))

@@ -6,30 +6,35 @@ import createHttpError from 'http-errors'
 import bcrypt from 'bcrypt';
 
 export async function register(req, res, next) {
-    const data = await registerSchema.parseAsync(req.body)
-    const existingUser = await prisma.user.findUnique({
-        where: { username: data.username }
-    })
-    if (existingUser) {
-        return next(createHttpError[400]('Username is already taken'))
+    try {
+        const data = await registerSchema.parseAsync(req.body)
+        const existingUser = await prisma.user.findUnique({
+            where: { username: data.username }
+        })
+        if (existingUser) {
+            return next(createHttpError[400]('Username is already taken'))
+        }
+        const identityKey = data.email ? 'email' : 'mobile'
+        const foundUser = await getUserBy(identityKey, data[identityKey])
+        if (foundUser) {
+            return next(createHttpError[409]('This user have already register'))
+        }
+        const createNewuser = await createUser(data)
+        const profileInfo = createNewuser.userInfo[0]
+        const user = {
+            id: createNewuser.id,
+            [identityKey]: data[identityKey],
+            username: createNewuser.username,
+            userInfo: profileInfo
+        }
+        res.status(201).json({
+            success: true,
+            message: "Register Successful",
+            data: user
+        })
+    } catch (error) {
+        next(error)
     }
-    const identityKey = data.email ? 'email' : 'mobile'
-    const foundUser = await getUserBy(identityKey, data[identityKey])
-    if (foundUser) {
-        return next(createHttpError[409]('This user have already register'))
-    }
-    const createNewuser = await createUser(data)
-    const profileInfo = createNewuser.userInfo[0]
-    const user = {
-        id: createNewuser.id,
-        [identityKey]: data[identityKey],
-        username: createNewuser.username,
-        userInfo: profileInfo
-    }
-    res.json({
-        message: "Register Successful",
-        data: user
-    })
 }
 export async function login(req, res, next) {
     try {

@@ -26,7 +26,6 @@ export async function dailyCheck(req, res, next) {
                         isAlreadyDrawn: true, // ส่ง Flag ไปบอกหน้าบ้าน
                         data: alreadyRead
                     });
-            } else {
             }
         }
         return next()

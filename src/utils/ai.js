@@ -38,5 +38,9 @@ ${cardInfo}
   });
   let text = response.text;
   text = text.replace(/```json|```/g, "").trim();
-  return JSON.parse(text);
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { summary: 'ไม่สามารถวิเคราะห์ได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง', detail: '', mood_score: 0 };
+  }
 }

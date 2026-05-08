@@ -45,6 +45,40 @@ export const loginSchema = z.object({
     password: data.password
 }))
 
+export const initReadingSchema = z.object({
+    spreadId: z.coerce.number().int().positive(),
+    question: z.string().max(500).optional(),
+    allowReversed: z.boolean().optional().default(false),
+    isDaily: z.boolean().optional().default(false),
+})
+
+export const shuffleSchema = z.object({
+    readingId: z.coerce.number().int().positive(),
+    allowReversed: z.boolean().optional().default(false),
+})
+
+export const cutSchema = z.object({
+    readingId: z.coerce.number().int().positive(),
+    position: z.coerce.number().int().min(0),
+})
+
+export const pickSchema = z.object({
+    readingId: z.coerce.number().int().positive(),
+    selectId: z.array(z.coerce.number().int().positive()).min(1),
+})
+
+export const aiInterpretSchema = z.object({
+    readingId: z.coerce.number().int().positive(),
+    spreadType: z.enum(['GENERAL', 'LOVE', 'CAREER', 'HEALTH']),
+    question: z.string().max(500).optional(),
+    card: z.array(z.object({ id: z.number(), name: z.string() })).min(1),
+})
+
+export const saveReadingSchema = z.object({
+    readingId: z.coerce.number().int().positive(),
+    note: z.string().max(2000).optional(),
+})
+
 export const updateMeSchema = z.object({
     identity: z.string().optional().or(z.literal('')),
     username: z.string().min(8, ("Username must be at least 8 characters long")).optional(),

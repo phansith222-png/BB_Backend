@@ -1,6 +1,6 @@
 import createHttpErrors from 'http-errors'
 import  prisma  from "../lib/prisma.js"
-import { updateMeSchema } from "../validations/prisma.js"
+import { updateMeSchema, saveReadingSchema } from "../validations/prisma.js"
 import { getUserBy } from "../services/user.service.js"
 
 
@@ -77,9 +77,9 @@ export async function getHistory(req, res, next) {
                     }
                 }
             });
-            const {deckOrder,...resHistory} = history[0]
+            const safeHistory = history.map(({ deckOrder, ...rest }) => rest)
 
-            return res.status(200).json({ success: true, data: resHistory });
+            return res.status(200).json({ success: true, data: safeHistory });
         }
     } catch (error) {
         next(error)
@@ -88,7 +88,7 @@ export async function getHistory(req, res, next) {
 export async function saveReading(req, res, next) {
     try {
         const { user, userInfo } = req.user
-        const { readingId, note } = req.body
+        const { readingId, note } = await saveReadingSchema.parseAsync(req.body)
 
         const readingOwnership = await prisma.reading.findFirst({
             where: { id: +readingId, userInfoId: +userInfo.id }

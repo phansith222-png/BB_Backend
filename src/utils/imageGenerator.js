@@ -46,7 +46,13 @@ function wrapLines(ctx, text, maxWidth) {
 
 async function fetchCardImage(url) {
     try {
-        const res = await fetch(url, { signal: AbortSignal.timeout(5000) })
+        const res = await fetch(url, {
+            signal: AbortSignal.timeout(10000),
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (compatible; BigBode/1.0)',
+                'Referer': new URL(url).origin + '/',
+            },
+        })
         if (!res.ok) return null
         return await loadImage(Buffer.from(await res.arrayBuffer()))
     } catch {
