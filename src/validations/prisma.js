@@ -64,12 +64,15 @@ export const cutSchema = z.object({
 
 export const pickSchema = z.object({
     readingId: z.coerce.number().int().positive(),
-    selectId: z.array(z.coerce.number().int().positive()).min(1),
+    selectId: z.array(z.object({
+        id: z.coerce.number().int().positive(),
+        isReversed: z.boolean().optional(),
+    })).min(1),
 })
 
 export const aiInterpretSchema = z.object({
     readingId: z.coerce.number().int().positive(),
-    spreadType: z.enum(['GENERAL', 'LOVE', 'CAREER', 'HEALTH']),
+    spreadType: z.string().min(1),
     question: z.string().max(500).optional(),
     card: z.array(z.object({ id: z.number(), name: z.string() })).min(1),
 })
