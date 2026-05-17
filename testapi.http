@@ -1,5 +1,4 @@
 @base_url = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTc3NzYyNTExMywiZXhwIjoxNzc3NzExNTEzfQ.QBzXAlZyuHyBOT9RioxjsKk4BXbfqcTkevhDAdlvy8Q
 Content-Type: application/json
 
 {

@@ -2,6 +2,10 @@ node_modules
 # Keep environment variables out of version control
 .env
 
+.claude
+testapi.http
+*.http
+
 /src/generated/prisma
 CLAUDE.md
 .claude/settings.local.json
