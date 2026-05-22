@@ -18,15 +18,17 @@ enum RoleType {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  username  String     @unique
-  password  String
-  email     String?    @unique
-  mobile    String?    @unique
-  role      RoleType   @default(USER)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  userInfo  UserInfo[]
+  id               Int        @id @default(autoincrement())
+  username         String     @unique
+  password         String
+  email            String?    @unique
+  mobile           String?    @unique
+  role             RoleType   @default(USER)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  userInfo         UserInfo[]
 }
 
 model UserInfo {

@@ -1,7 +1,9 @@
+import crypto from 'crypto'
 import prisma from "../lib/prisma.js"
 import { createUser, getUserBy } from "../services/user.service.js"
 import { createToken } from "../utils/jwt.js"
-import { loginSchema, registerSchema } from "../validations/prisma.js"
+import { forgotPasswordSchema, loginSchema, registerSchema, resetPasswordSchema } from "../validations/prisma.js"
+import { sendPasswordResetEmail } from "../utils/mailer.js"
 import createHttpError from 'http-errors'
 import bcrypt from 'bcrypt';
 
@@ -36,6 +38,7 @@ export async function register(req, res, next) {
         next(error)
     }
 }
+
 export async function login(req, res, next) {
     try {
         const data = loginSchema.parse(req.body)
@@ -56,6 +59,46 @@ export async function login(req, res, next) {
             user: user,
             profile: userInfo[0] || null
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export async function forgotPassword(req, res, next) {
+    try {
+        const { identity } = await forgotPasswordSchema.parseAsync(req.body)
+        const user = await prisma.user.findFirst({
+            where: { OR: [{ email: identity }, { username: identity }] }
+        })
+        if (!user || !user.email) {
+            return res.json({ success: true, message: "หากบัญชีนี้มีอยู่ ระบบจะส่งอีเมลให้" })
+        }
+        const token = crypto.randomBytes(32).toString('hex')
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { resetToken: token, resetTokenExpiry: new Date(Date.now() + 3_600_000) }
+        })
+        await sendPasswordResetEmail(user.email, token)
+        res.json({ success: true, message: "หากบัญชีนี้มีอยู่ ระบบจะส่งอีเมลให้" })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export async function resetPassword(req, res, next) {
+    try {
+        const { token, hashedPassword } = await resetPasswordSchema.parseAsync(req.body)
+        const user = await prisma.user.findFirst({
+            where: { resetToken: token, resetTokenExpiry: { gt: new Date() } }
+        })
+        if (!user) {
+            return res.status(400).json({ success: false, message: "ลิงก์หมดอายุหรือไม่ถูกต้อง" })
+        }
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { password: hashedPassword, resetToken: null, resetTokenExpiry: null }
+        })
+        res.json({ success: true, message: "เปลี่ยนรหัสผ่านสำเร็จ" })
     } catch (error) {
         next(error)
     }
